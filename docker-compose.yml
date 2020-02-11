@@ -1,0 +1,88 @@
+version: "3.5"
+
+networks:
+  proxy:
+    name: ${TRAEFIK_NETWORK_NAME}
+    external: true
+  internal:
+
+volumes:
+  nextcloud:
+  mysqldir:
+
+services:
+  nextcloud:
+    image: nextcloud:17.0.1
+    restart: always
+    volumes:
+      - nextcloud:/var/www/html
+      - ./nextcloud.config.php:/usr/src/nextcloud/config/custom.config.php
+      - ./nextcloud.config.php:/var/www/html/config/custom.config.php
+    labels:
+      - "traefik.docker.network=proxy"
+      - "traefik.enable=true"
+      - "traefik.basic.frontend.rule=Host:${DOMAIN_NAME}"
+      - "traefik.basic.port=80"
+      - "traefik.basic.protocol=http"
+      - "traefik.frontend.headers.forceSTSHeader=true"
+      - "traefik.frontend.headers.STSSeconds=315360000"
+      - "traefik.frontend.headers.STSIncludeSubdomains=true"
+      - "traefik.frontend.headers.STSPreload=true"
+      - "traefik.frontend.redirect.regex=^https?://${DOMAIN_NAME}/.well-known/(carddav|caldav)"
+      - "traefik.frontend.redirect.replacement=https://${DOMAIN_NAME}/remote.php/dav"
+    networks:
+      - proxy
+      - internal
+    depends_on:
+      - db
+      - smtp
+      - redis
+    environment:
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: root
+      MYSQL_HOST: db:3306
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      NEXTCLOUD_SYSTEM_EMAIL:
+      NEXTCLOUD_PROXY_IP:
+      NEXTCLOUD_DOMAIN_NAME: ${DOMAIN_NAME}
+      REDIS_HOST: redis
+
+  db:
+    image: mariadb:10.4.10
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: "nextcloud"
+      MYSQL_ROOT_HOST: "%"
+    restart: always
+    volumes:
+      - mysqldir:/var/lib/mysql
+    networks:
+      - internal
+    labels:
+      - traefik.enable=false
+
+  smtp:
+    image: namshi/smtp
+    restart: always
+    networks:
+      - internal
+    labels:
+      - traefik.enable=false
+
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+      - internal
+
+  cron:
+    image: nextcloud:17.0.1-apache
+    restart: always
+    volumes:
+      - nextcloud:/var/www/html
+    entrypoint: /cron.sh
+    depends_on:
+      - db
+      - redis
+    networks:
+      - internal

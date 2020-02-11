@@ -1,2 +1,5 @@
 # Vim swap files.
 *.swp
+
+# Env file with password.
+.env
