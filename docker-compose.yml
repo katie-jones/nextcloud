@@ -17,7 +17,6 @@ services:
     volumes:
       - nextcloud:/var/www/html
       - ./nextcloud.config.php:/usr/src/nextcloud/config/custom.config.php
-      - ./nextcloud.config.php:/var/www/html/config/custom.config.php
     labels:
       - "traefik.docker.network=proxy"
       - "traefik.enable=true"
