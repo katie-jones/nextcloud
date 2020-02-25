@@ -55,6 +55,11 @@ services:
       NEXTCLOUD_PROXY_IP:
       NEXTCLOUD_DOMAIN_NAME: ${DOMAIN_NAME}
       REDIS_HOST: redis
+      NEXTCLOUD_S3_BUCKET:
+      NEXTCLOUD_S3_KEY:
+      NEXTCLOUD_S3_SECRET:
+      NEXTCLOUD_S3_HOSTNAME:
+      NEXTCLOUD_S3_REGION:
 
   db:
     image: mariadb:10.4.10
