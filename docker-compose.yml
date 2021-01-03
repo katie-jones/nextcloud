@@ -18,17 +18,27 @@ services:
       - nextcloud:/var/www/html
       - ./nextcloud.config.php:/usr/src/nextcloud/config/custom.config.php
     labels:
-      - "traefik.docker.network=proxy"
+      # Enable access.
       - "traefik.enable=true"
-      - "traefik.basic.frontend.rule=Host:${DOMAIN_NAME}"
-      - "traefik.basic.port=80"
-      - "traefik.basic.protocol=http"
-      - "traefik.frontend.headers.forceSTSHeader=true"
-      - "traefik.frontend.headers.STSSeconds=315360000"
-      - "traefik.frontend.headers.STSIncludeSubdomains=true"
-      - "traefik.frontend.headers.STSPreload=true"
-      - "traefik.frontend.redirect.regex=^https?://${DOMAIN_NAME}/.well-known/(carddav|caldav)"
-      - "traefik.frontend.redirect.replacement=https://${DOMAIN_NAME}/remote.php/dav"
+
+      # Route all requests to DOMAIN_NAME to this service.
+      - "traefik.http.routers.nextcloud.rule=Host(`${DOMAIN_NAME}`)"
+
+      # Enable Let's Encrypt.
+      - "traefik.http.routers.nextcloud.tls=true"
+      - "traefik.http.routers.nextcloud.tls.certresolver=letsencrypt"
+
+      # Enable port 80.
+      - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
+
+      # Add redirect middleware for carddav/caldav.
+      - "traefik.http.middlewares.nextcloudreplace.redirectregex.regex=https://(.*)/.well-known/(card|cal)dav"
+      - "traefik.http.middlewares.nextcloudreplace.redirectregex.replacement=https://$$1/remote.php/dav/"
+      - "traefik.http.middlewares.nextcloudreplace.redirectregex.permanent=true"
+
+      # Enable secure headers and redirect.
+      - "traefik.http.routers.nextcloud.middlewares=secureheader,nextcloudreplace"
+
     networks:
       - proxy
       - internal
