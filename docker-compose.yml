@@ -12,7 +12,7 @@ volumes:
 
 services:
   nextcloud:
-    image: nextcloud:17.0.1
+    image: nextcloud:20
     restart: always
     volumes:
       - nextcloud:/var/www/html
@@ -85,7 +85,7 @@ services:
       - internal
 
   cron:
-    image: nextcloud:17.0.1-apache
+    image: nextcloud:20-apache
     restart: always
     volumes:
       - nextcloud:/var/www/html
