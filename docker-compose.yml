@@ -72,16 +72,12 @@ services:
       - sql:/var/lib/mysql
     networks:
       - internal
-    labels:
-      - traefik.enable=false
 
   smtp:
     image: namshi/smtp
     restart: always
     networks:
       - internal
-    labels:
-      - traefik.enable=false
 
   redis:
     image: redis:alpine
@@ -90,13 +86,12 @@ services:
       - internal
 
   cron:
-    image: nextcloud:20-apache
+    image: nextcloud:20
     restart: always
     volumes:
       - nextcloud:/var/www/html
     entrypoint: /cron.sh
-    depends_on:
-      - db
-      - redis
     networks:
       - internal
+    depends_on:
+      - db
