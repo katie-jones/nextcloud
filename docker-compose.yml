@@ -39,6 +39,9 @@ services:
       # Enable secure headers and redirect.
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=secureheader,${COMPOSE_PROJECT_NAME}replace"
 
+      # Enable watchtower.
+      - "com.centurylinklabs.watchtower.scope=${COMPOSE_PROJECT_NAME}"
+
     networks:
       - proxy
       - internal
@@ -72,18 +75,24 @@ services:
       - sql:/var/lib/mysql
     networks:
       - internal
+    labels:
+      - "com.centurylinklabs.watchtower.scope=${COMPOSE_PROJECT_NAME}"
 
   smtp:
     image: namshi/smtp
     restart: always
     networks:
       - internal
+    labels:
+      - "com.centurylinklabs.watchtower.scope=${COMPOSE_PROJECT_NAME}"
 
   redis:
     image: redis:alpine
     restart: always
     networks:
       - internal
+    labels:
+      - "com.centurylinklabs.watchtower.scope=${COMPOSE_PROJECT_NAME}"
 
   cron:
     image: nextcloud:20
@@ -95,3 +104,13 @@ services:
       - internal
     depends_on:
       - db
+    labels:
+      - "com.centurylinklabs.watchtower.scope=${COMPOSE_PROJECT_NAME}"
+
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --scope ${COMPOSE_PROJECT_NAME}
+    labels:
+      - "com.centurylinklabs.watchtower.scope=${COMPOSE_PROJECT_NAME}"
