@@ -8,7 +8,7 @@ networks:
 
 volumes:
   nextcloud:
-  mysqldir:
+  sql:
 
 services:
   nextcloud:
@@ -69,7 +69,7 @@ services:
       MYSQL_ROOT_HOST: "%"
     restart: always
     volumes:
-      - mysqldir:/var/lib/mysql
+      - sql:/var/lib/mysql
     networks:
       - internal
     labels:
