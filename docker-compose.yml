@@ -2,7 +2,7 @@ version: "3.5"
 
 networks:
   proxy:
-    name: ${TRAEFIK_NETWORK_NAME}
+    name: ${PROXY_NETWORK_NAME}
     external: true
   internal:
 
@@ -16,7 +16,6 @@ services:
     restart: always
     volumes:
       - nextcloud:/var/www/html
-      - ./nextcloud.config.php:/usr/src/nextcloud/config/custom.config.php
     labels:
       # Enable access.
       - "traefik.enable=true"
@@ -49,26 +48,27 @@ services:
       - db
       - smtp
       - redis
+    env_file:
+      - .env
     environment:
-      MYSQL_DATABASE: nextcloud
+      # SQL setup.
       MYSQL_USER: root
-      MYSQL_HOST: db:3306
-      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      NEXTCLOUD_SYSTEM_EMAIL:
-      NEXTCLOUD_PROXY_IP:
-      NEXTCLOUD_DOMAIN_NAME: ${DOMAIN_NAME}
+      MYSQL_HOST: db:${MYSQL_PORT}
+
+      # SMTP setup.
+      SMTP_HOST: smtp
+
+      # Redis setup.
       REDIS_HOST: redis
-      NEXTCLOUD_S3_BUCKET:
-      NEXTCLOUD_S3_KEY:
-      NEXTCLOUD_S3_SECRET:
-      NEXTCLOUD_S3_HOSTNAME:
-      NEXTCLOUD_S3_REGION:
+
+      # Proxy setup.
+      OVERWRITEHOST: ${DOMAIN_NAME}
 
   db:
     image: mariadb:10
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: "nextcloud"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE:
       MYSQL_ROOT_HOST: "%"
     restart: always
     volumes:
