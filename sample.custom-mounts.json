@@ -1,0 +1,31 @@
+[
+    {
+        "mount_id": 1,
+        "mount_point": "\/<Mount Point>",
+        "storage": "\\OCA\\Files_External\\Lib\\Storage\\AmazonS3",
+        "authentication_type": "amazons3::accesskey",
+        "configuration": {
+            "bucket": "<bucketname>",
+            "hostname": "<hostname>",
+            "port": "443",
+            "region": "<region>",
+            "use_ssl": true,
+            "use_path_style": false,
+            "legacy_auth": false,
+            "key": "<accesskey>",
+            "secret": "<secretkey>"
+        },
+        "options": {
+            "encrypt": true,
+            "previews": true,
+            "enable_sharing": false,
+            "filesystem_check_changes": 1,
+            "encoding_compatibility": false,
+            "readonly": false
+        },
+        "applicable_users": [
+            "admin"
+        ],
+        "applicable_groups": []
+    }
+]

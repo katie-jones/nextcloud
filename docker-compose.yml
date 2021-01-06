@@ -16,6 +16,10 @@ services:
     restart: always
     volumes:
       - nextcloud:/var/www/html
+      - ./entrypoint-with-init.sh:/entrypoint-with-init.sh
+      - ./custom-mounts.json:/opt/nextcloud/custom-mounts.json
+    entrypoint: /entrypoint-with-init.sh
+    command: apache2-foreground
     labels:
       # Enable access.
       - "traefik.enable=true"

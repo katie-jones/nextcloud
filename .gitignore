@@ -3,3 +3,6 @@
 
 # Env file with password.
 .env
+
+# Custom mounts file with access keys.
+custom-mounts.json
