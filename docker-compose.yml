@@ -62,7 +62,7 @@ services:
       NEXTCLOUD_S3_REGION:
 
   db:
-    image: mariadb:10.4.10
+    image: mariadb:10
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: "nextcloud"
