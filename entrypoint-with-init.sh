@@ -2,7 +2,7 @@
 
 # Patch /entrypoint.sh
 patch /entrypoint.sh << EOM
-@@ -159,6 +159,37 @@
+@@ -159,6 +159,40 @@
                      if [ "$try" -gt "$max_retries" ]; then
                          echo "installing of nextcloud failed!"
                          exit 1
@@ -13,6 +13,9 @@ patch /entrypoint.sh << EOM
 +                        run_as "php /var/www/html/occ app:enable encryption"
 +                        run_as "php /var/www/html/occ encryption:enable"
 +                        run_as "php /var/www/html/occ app:install end_to_end_encryption"
++
++                        # Disable encrypted home storage.
++                        run_as "php /var/www/html/occ config:app:set encryption encryptHomeStorage --value 0"
 +
 +                        # Install and enable 2FA app.
 +                        run_as "php /var/www/html/occ app:install twofactor_totp"
