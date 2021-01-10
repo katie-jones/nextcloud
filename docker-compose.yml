@@ -18,6 +18,7 @@ services:
       - nextcloud:/var/www/html
       - ./entrypoint-with-init.sh:/entrypoint-with-init.sh
       - ./custom-mounts.json:/opt/nextcloud/custom-mounts.json
+      - ./nextcloud.config.php:/usr/src/nextcloud/config/custom.config.php
     entrypoint: /entrypoint-with-init.sh
     command: apache2-foreground
     labels:
