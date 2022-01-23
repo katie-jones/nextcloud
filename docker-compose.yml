@@ -78,6 +78,7 @@ services:
     restart: always
     volumes:
       - sql:/var/lib/mysql
+      - ./innodb_settings.cnf:/etc/mysql/conf.d/innodb_settings.cnf
     networks:
       - internal
     labels:

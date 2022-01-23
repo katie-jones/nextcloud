@@ -1,0 +1,2 @@
+[mysqld]
+innodb_read_only_compressed=0
