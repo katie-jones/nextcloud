@@ -24,7 +24,7 @@ patch /entrypoint.sh << EOM
 +                        run_as "php /var/www/html/occ app:enable files_external"
 +                        if [ -f /opt/nextcloud/custom-mounts.json ]; then
 +                            echo "Mounting custom external storage"
-+                            run_as "php /var/www/html/occ files_external:import /opt/nextcloud/custom-mounts.json"
++                            run_as "php /var/www/html/occ files_external:import /opt/nextcloud/custom-mounts.json" || echo "Custom mounts failed"
 +                        fi
 +
 +                        # Auto-create users if provided.
