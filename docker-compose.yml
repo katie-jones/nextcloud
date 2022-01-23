@@ -70,7 +70,7 @@ services:
       OVERWRITEHOST: ${DOMAIN_NAME}
 
   db:
-    image: mariadb:10
+    image: mariadb:10.6
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE:
